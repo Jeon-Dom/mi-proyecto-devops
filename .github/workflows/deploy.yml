@@ -7,10 +7,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  # Convierte el nombre del repositorio a minúsculas
   IMAGE_NAME: ${{ github.repository }}
-  # Definimos la versión inicial aquí para usarla de tag
-  APP_VERSION: 1.0.0 
+  APP_VERSION: 2.0.0  # <-- Cambiar aquí de 1.0.0 a 2.0.0
 
 jobs:
   build-and-push:

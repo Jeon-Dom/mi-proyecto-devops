@@ -7,7 +7,8 @@ app = Flask(__name__)
 
 # Configuración mediante variables de entorno
 APP_NAME = os.getenv("APP_NAME", "Aplicación Flask DevOps")
-APP_VERSION = os.getenv("APP_VERSION", "1.0.0")
+# Antes: APP_VERSION = os.getenv("APP_VERSION", "1.0.0")
+APP_VERSION = os.getenv("APP_VERSION", "2.0.0")
 DB_HOST = os.getenv("DB_HOST", "db")
 DB_NAME = os.getenv("DB_NAME", "devops_db")
 DB_USER = os.getenv("DB_USER", "postgres")
