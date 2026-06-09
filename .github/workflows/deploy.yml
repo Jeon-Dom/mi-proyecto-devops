@@ -1,0 +1,51 @@
+name: CI/CD GitHub Container Registry
+
+on:
+  push:
+    branches:
+      - main  # Se ejecuta al hacer push a la rama principal
+
+env:
+  REGISTRY: ghcr.io
+  # Convierte el nombre del repositorio a minúsculas para evitar problemas con GHCR
+  IMAGE_NAME: ${{ github.repository }}
+  # Definimos la versión aquí para usarla de tag
+  APP_VERSION: 1.0.0 
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Docker Buildx
+        uses: actions/setup-buildx-action@v3
+
+      - name: Iniciar sesión en GitHub Container Registry (GHCR)
+        uses: actions/login-to-registry-action@v1 # Alternativamente puedes usar docker/login-action
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extraer metadatos para Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ env.APP_VERSION }}
+            type=raw,value=latest
+
+      - name: Construir y publicar imagen Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: ./app
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
